@@ -2,8 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Instalar Poetry
+RUN pip install poetry
+
+# Copiar configuración de Poetry
+COPY pyproject.toml ./
+
+# Instalar dependencias sin instalar el proyecto actual
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --no-root
 
 COPY schema_generator.py .
 

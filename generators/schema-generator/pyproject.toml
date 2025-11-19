@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "schema-generator"
+version = "0.1.0"
+description = "Schema generator for DataPipe framework"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+oracledb = "^2.0.1"
+google-cloud-secret-manager = "^2.18.2"
+google-cloud-bigquery = "^3.14.1"
+pyyaml = "^6.0.1"
+structlog = "^24.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
