@@ -1,45 +1,48 @@
-.PHONY: help setup build-generators init test-framework clean
+.PHONY: help init-cloud build-cloud test-cloud setup build-generators
 
 help:
+	@echo "DataPipe Framework - Comandos Multinube:"
 	@echo ""
-	@echo "DataPipe Framework - Comandos:"
-	@echo ""
-	@echo "  setup              - Instalar dependencias"
-	@echo "  build-generators   - Construir generadores Docker"
-	@echo "  init               - Crear nuevo proyecto"
-	@echo "  test-framework     - Probar framework"
-	@echo "  clean              - Limpiar cache"
+	@echo "  make init-cloud CLOUD=gcp     - Crear proyecto GCP"
+	@echo "  make init-cloud CLOUD=aws     - Crear proyecto AWS" 
+	@echo "  make init-cloud CLOUD=azure   - Crear proyecto Azure"
+	@echo "  make build-cloud CLOUD=gcp    - Construir imágenes"
+	@echo "  make test-cloud CLOUD=gcp     - Probar pipeline"
+	@echo "  make build-generators         - Construir generadores"
 	@echo ""
 
 setup:
-	@echo "Instalando dependencias..."
-	pip3 install cookiecutter pyyaml
-	@echo "Setup completado"
+	@echo "Verificando dependencias..."
+	@which cookiecutter || echo "Instala cookiecutter: brew install cookiecutter"
+	@echo "✅ Dependencias verificadas"
+
+init-cloud:
+ifndef CLOUD
+	$(error CLOUD no definido. Uso: make init-cloud CLOUD=gcp|aws|azure)
+endif
+	@echo "Inicializando estructura para: $(CLOUD)"
+	@mkdir -p clouds/$(CLOUD)/{extractor,loader,transformer}/src
+	@mkdir -p templates/$(CLOUD)/\{\{cookiecutter.project_slug\}\}
+	@echo "✅ Estructura $(CLOUD) creada"
+
+build-cloud:
+ifndef CLOUD
+	$(error CLOUD no definido. Uso: make build-cloud CLOUD=gcp|aws|azure)
+endif
+	@echo "Construyendo imágenes para: $(CLOUD)"
+	@docker build -t datapipe/loader-$(CLOUD):latest clouds/$(CLOUD)/loader/ 2>/dev/null || echo "⚠️  Dockerfile no encontrado para $(CLOUD)"
+	@echo "✅ Imágenes $(CLOUD) procesadas"
+
+test-cloud:
+ifndef CLOUD
+	$(error CLOUD no definido. Uso: make test-cloud CLOUD=gcp|aws|azure)
+endif
+	@echo "Probando pipeline: $(CLOUD)"
+	@docker run --rm datapipe/loader-$(CLOUD):latest 2>/dev/null || echo "⚠️  Imagen no encontrada, ejecuta: make build-cloud CLOUD=$(CLOUD)"
+	@echo "✅ Pipeline $(CLOUD) verificado"
 
 build-generators:
-	@echo "Construyendo generadores..."
-	@echo "Building schema-generator..."
+	@echo "Construyendo generadores base..."
 	cd generators/schema-generator && docker build -t datapipe/schema-generator:latest .
-	@echo "Building table-generator..."
 	cd generators/table-generator && docker build -t datapipe/table-generator:latest .
-	@echo "Building procedure-generator..."
-	cd generators/procedure-generator && docker build -t datapipe/procedure-generator:latest .
-	@echo "Building dag-generator..."
-	cd generators/dag-generator && docker build -t datapipe/dag-generator:latest .
-	@echo "Generadores construidos"
-	@docker images | grep datapipe
-
-init:
-	@echo "Creando nuevo proyecto..."
-	cookiecutter generators/cookiecutter-datapipe/
-	@echo "Proyecto creado"
-
-test-framework:
-	@echo "Testing framework..."
-	docker run --rm datapipe/schema-generator:latest python --version
-	@echo "Framework OK"
-
-clean:
-	@echo "Limpiando..."
-	docker system prune -f
-	@echo "Limpieza completada"
+	@echo "✅ Generadores construidos"

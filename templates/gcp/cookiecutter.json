@@ -1,0 +1,7 @@
+{
+  "project_name": "mi_pipeline_gcp",
+  "cloud": "gcp",
+  "gcp_project": "tu-proyecto",
+  "bq_dataset": "mi_dataset",
+  "gcs_bucket": "mi-bucket"
+}

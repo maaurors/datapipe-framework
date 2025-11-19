@@ -1,0 +1,7 @@
+{
+  "project_name": "mi_pipeline_azure",
+  "cloud": "azure",
+  "azure_region": "eastus",
+  "storage_account": "mistorage",
+  "synapse_workspace": "mi-synapse"
+}

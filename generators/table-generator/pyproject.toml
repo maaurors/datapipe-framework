@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "table-generator"
+version = "0.1.0"
+description = "Table generator for DataPipe framework"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+google-cloud-bigquery = "^3.14.1"
+pyyaml = "^6.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

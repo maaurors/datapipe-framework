@@ -1,0 +1,7 @@
+{
+  "project_name": "mi_pipeline_aws", 
+  "cloud": "aws",
+  "aws_region": "us-east-1",
+  "s3_bucket": "mi-bucket",
+  "redshift_cluster": "mi-cluster"
+}
