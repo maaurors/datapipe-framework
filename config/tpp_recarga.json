@@ -1,0 +1,29 @@
+{
+  "table_name": "TPP_RECARGA",
+  "partition_field": "fecha_respuesta",
+  "partition_data_type": "DATETIME",
+  "clustering_fields": [
+    "tipo_canal",
+    "codigo_producto"
+  ],
+  "date_field_type": "DATETIME",
+  "dataset": "dep_de_apoyo_filiales_tapp",
+  "labels": [
+    {
+      "key": "origen",
+      "value": "proybd"
+    },
+    {
+      "key": "ambiente",
+      "value": "analitico"
+    },
+    {
+      "key": "producto",
+      "value": "migracion_tapp"
+    },
+    {
+      "key": "dominio",
+      "value": "de_apoyo"
+    }
+  ]
+}
