@@ -33,7 +33,7 @@ with DAG(
         task_id="extract_tpp_recarga_to_s3",
         oracle_conn_id="oracle_conn",  # CAMBIAR: ID de conexion Oracle en Airflow
         s3_bucket="{{ dag_run.conf[''s3_bucket''] }}",  # CAMBIAR: Bucket S3 destino
-        s3_key="data_ingest_proybd/de_apoyo/filiales/tapp/migracion_tapp/analitico/tpp_recarga/",  # CAMBIAR: Path en S3
+        s3_key="{s3_ingest_path}/tpp_recarga/",  # CAMBIAR: Path en S3
         sql_query="sql/oracle/tpp_recarga.sql",  # Usa el SQL generado automaticamente
         file_format="PARQUET"  # CAMBIAR: Formato de archivo (PARQUET, CSV, JSON)
     )
@@ -42,9 +42,9 @@ with DAG(
     load_to_redshift = S3ToRedshiftOperator(
         task_id="load_tpp_recarga_to_redshift",
         s3_bucket="{{ dag_run.conf[''s3_bucket''] }}",
-        s3_key="data_ingest_proybd/de_apoyo/filiales/tapp/migracion_tapp/analitico/tpp_recarga/*.parquet",
+        s3_key="{s3_ingest_path}/tpp_recarga/*.parquet",
         redshift_conn_id="redshift_conn",  # CAMBIAR: ID de conexion Redshift
-        schema="dep_de_apoyo_filiales_tapp",  # CAMBIAR: Schema en Redshift
+        schema="{redshift_schema}",  # CAMBIAR: Schema en Redshift
         table="tpp_recarga",  # CAMBIAR: Nombre de tabla en Redshift
         copy_options=["FORMAT AS PARQUET"]  # CAMBIAR: Opciones de carga
     )

@@ -32,7 +32,7 @@ with DAG(
     extract_to_s3 = OracleToS3Operator(
         task_id="extract_{table_name}_to_s3",
         oracle_conn_id="oracle_conn",  # CAMBIAR: ID de conexion Oracle en Airflow
-        s3_bucket="{{ dag_run.conf[''s3_bucket''] }}",  # CAMBIAR: Bucket S3 destino
+        s3_bucket="{{ dag_run.conf['s3_bucket'] }}",  # CAMBIAR: Bucket S3 destino
         s3_key="{s3_ingest_path}/{table_name}/",  # CAMBIAR: Path en S3
         sql_query="sql/oracle/{table_name}.sql",  # Usa el SQL generado automaticamente
         file_format="PARQUET"  # CAMBIAR: Formato de archivo (PARQUET, CSV, JSON)
@@ -41,7 +41,7 @@ with DAG(
     # TAREA 2: Cargar datos de S3 a Redshift
     load_to_redshift = S3ToRedshiftOperator(
         task_id="load_{table_name}_to_redshift",
-        s3_bucket="{{ dag_run.conf[''s3_bucket''] }}",
+        s3_bucket="{{ dag_run.conf['s3_bucket'] }}",
         s3_key="{s3_ingest_path}/{table_name}/*.parquet",
         redshift_conn_id="redshift_conn",  # CAMBIAR: ID de conexion Redshift
         schema="{redshift_schema}",  # CAMBIAR: Schema en Redshift
