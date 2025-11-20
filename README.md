@@ -21,3 +21,12 @@ Framework profesional para migración de datos desde Oracle a múltiples clouds 
 ```bash
 make build-generators
 make init
+
+### Modos de Ejecución:
+
+```bash
+# Modo local (testing)
+poetry run migrate-table --cloud gcp --table clientes --env dev --execution-mode local
+
+# Modo cloud (producción - serverless)
+poetry run migrate-table --cloud gcp --table clientes --env prd --execution-mode cloud
