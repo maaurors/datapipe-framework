@@ -1,1 +1,0 @@
--- Stored Procedure para tpp_recarga
