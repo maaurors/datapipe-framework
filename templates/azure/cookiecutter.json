@@ -1,7 +1,11 @@
 {
-  "project_name": "mi_pipeline_azure",
+  "project_name": " ",
+  "table_name": " ",
   "cloud": "azure",
-  "azure_region": "eastus",
-  "storage_account": "mistorage",
-  "synapse_workspace": "mi-synapse"
+  "azure_region": " ",
+  "storage_account": " ",
+  "synapse_workspace": " ",
+  "load_mode": " ",
+  "oracle_table": " ",
+  "oracle_schema": " "
 }

@@ -1,7 +1,11 @@
 {
-  "project_name": "mi_pipeline_gcp",
+  "project_name": " ",
+  "table_name": " ",
   "cloud": "gcp",
-  "gcp_project": "tu-proyecto",
-  "bq_dataset": "mi_dataset",
-  "gcs_bucket": "mi-bucket"
+  "gcp_project": " ",
+  "bq_dataset": " ",
+  "gcs_bucket": " ",
+  "load_mode": " ",
+  "oracle_table": " ",
+  "oracle_schema": " "
 }

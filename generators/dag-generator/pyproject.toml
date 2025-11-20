@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "table-generator"
+name = "dag-generator"
 version = "1.0.0"
-description = "Generic table-generator for DataPipe framework"
+description = "Generic dag-generator for DataPipe framework"
 package-mode = false
 
 [tool.poetry.dependencies]

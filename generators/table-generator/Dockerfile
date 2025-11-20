@@ -7,9 +7,6 @@ COPY pyproject.toml ./
 RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi --no-root
 
-COPY . .
+COPY src/ ./src/
 
-RUN useradd -m -u 1000 datapipe && chown -R datapipe:datapipe /app
-USER datapipe
-
-CMD ["echo", "Table Generator - En desarrollo"]
+ENTRYPOINT ["python", "src/table_generator.py"]

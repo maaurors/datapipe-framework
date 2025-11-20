@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY src/ ./src/
 
-RUN pip install redshift-connector boto3 structlog
+RUN pip install redshift-connector boto3
 
-CMD ["python", "src/loader.py"]
+ENTRYPOINT ["python", "src/loader.py"]

@@ -1,7 +1,12 @@
 {
-  "project_name": "mi_pipeline_aws", 
-  "cloud": "aws",
-  "aws_region": "us-east-1",
-  "s3_bucket": "mi-bucket",
-  "redshift_cluster": "mi-cluster"
+  "project_name": " ",
+  "table_name": " ",
+  "cloud": "aws", 
+  "aws_region": " ",
+  "s3_bucket": " ",
+  "redshift_cluster": " ",
+  "redshift_database": " ",
+  "load_mode": " ",
+  "oracle_table": " ",
+  "oracle_schema": " "
 }

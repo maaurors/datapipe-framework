@@ -6,4 +6,4 @@ COPY src/ ./src/
 
 RUN pip install structlog
 
-ENTRYPOINT ["python", "src/loader.py"]
+ENTRYPOINT ["python", "src/transformer.py"]
