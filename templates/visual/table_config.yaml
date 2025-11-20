@@ -1,0 +1,24 @@
+# VS CODE VISUAL CONFIG - Se edita gráficamente
+table_config:
+  table_name: "clientes"
+  oracle_source:
+    schema: "HR"
+    table: "CLIENTES"
+  cloud_destination:
+    gcp:
+      project: "my-project"
+      dataset: "staging"
+      table: "clientes"
+    aws:
+      bucket: "my-bucket"
+      folder: "clientes/"
+    azure:
+      container: "data-lake"
+      path: "clientes/"
+  transformations:
+    - field: "nombre"
+      action: "trim_upper"
+    - field: "fecha_creacion"
+      action: "format_date"
+    - field: "email"
+      action: "validate_email"

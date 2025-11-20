@@ -16,6 +16,7 @@ python-dotenv = "^1.0.0"
 
 [tool.poetry.scripts]
 migrate-table = "cloud_migrator.main_migrator:main"
+process-visual-config = "cloud_migrator.visual.processor:main"
 
 [build-system]
 requires = ["poetry-core"]
