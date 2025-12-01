@@ -1,0 +1,34 @@
+project:
+  name: "{{ project_name }}"
+  environment: "dev"
+
+source:
+  type: "oracle"
+  connection:
+    host: "${ORACLE_HOST}"
+    port: 1521
+    service_name: "${ORACLE_SERVICE}"
+    user: "${ORACLE_USER}"
+    password: "${ORACLE_PASSWORD}"
+
+destination:
+  cloud: "{{ cloud }}"
+  # Configuración específica según la nube elegida
+  gcp:
+    project_id: "my-gcp-project"
+    dataset: "raw_data"
+    location: "us-central1"
+  aws:
+    region: "us-east-1"
+    s3_bucket: "my-datalake-bucket"
+    redshift_cluster: "my-redshift-cluster"
+  azure:
+    resource_group: "my-resource-group"
+    storage_account: "mystorageaccount"
+    synapse_workspace: "my-synapse-workspace"
+
+tables:
+  - name: "EXAMPLE_TABLE"
+    load_mode: "full"  # full | incremental
+    partition_column: "CREATED_AT"
+    primary_keys: ["ID"]

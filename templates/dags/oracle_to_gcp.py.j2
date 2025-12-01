@@ -1,0 +1,53 @@
+from airflow import DAG
+from airflow.providers.docker.operators.docker import DockerOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'datapipe',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    '{{ project.name }}_oracle_to_gcp',
+    default_args=default_args,
+    description='Migración Oracle a GCP para {{ project.name }}',
+    schedule_interval='{{ schedule }}',
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+    tags=['datapipe', 'oracle', 'gcp'],
+)
+
+{% for table in project.tables %}
+extract_{{ table.name }} = DockerOperator(
+    task_id='extract_{{ table.name }}',
+    image='datapipe/extractor:latest',
+    api_version='auto',
+    auto_remove=True,
+    command=["--table", "{{ table.name }}", "--cloud", "gcp"],
+    environment={
+        'ORACLE_HOST': '{{ project.source.connection.host }}',
+        'GCS_BUCKET': '{{ project.destination.gcp.bucket }}',
+        # ... otros env vars
+    },
+    dag=dag,
+)
+
+load_{{ table.name }} = DockerOperator(
+    task_id='load_{{ table.name }}',
+    image='datapipe/loader:latest',
+    api_version='auto',
+    auto_remove=True,
+    command=["--table", "{{ table.name }}", "--cloud", "gcp"],
+    environment={
+        'BQ_DATASET': '{{ project.destination.gcp.dataset }}',
+        # ... otros env vars
+    },
+    dag=dag,
+)
+
+extract_{{ table.name }} >> load_{{ table.name }}
+{% endfor %}
