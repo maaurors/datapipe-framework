@@ -2,7 +2,7 @@
 
 Framework profesional para migración de datos desde Oracle a múltiples clouds (GCP, AWS, Azure) utilizando una arquitectura moderna basada en Docker, AVRO y Poetry.
 
-## 🚀 Características
+## Caracteristicas Principales
 
 - **Multi-Cloud Nativo**: Soporte de primera clase para GCP (BigQuery), AWS (Redshift) y Azure (Synapse).
 - **Arquitectura AVRO-First**: Todos los datos se extraen en formato AVRO con schema evolution y compresión Snappy.
@@ -14,13 +14,49 @@ Framework profesional para migración de datos desde Oracle a múltiples clouds 
   - Scripts SQL
 - **Configuración Centralizada**: Todo el proyecto se define en un simple `config.yaml`.
 
-## 📋 Requisitos Previos
+## Arquitectura Multi-Cloud
+
+Este framework ha sido diseñado desde cero para ser agnóstico a la nube, permitiendo migrar datos a cualquier proveedor sin reescribir código.
+
+### ¿Por qué es Multi-Cloud?
+
+1.  **Abstracción de Lógica**: Los componentes de extracción (Oracle) y carga (Cloud) están desacoplados. El extractor genera archivos AVRO estándar que cualquier nube puede leer.
+2.  **Configuración Unificada**: Un solo archivo `config.yaml` define el destino. Cambiar de GCP a AWS es tan simple como cambiar unas líneas de configuración.
+3.  **Docker Containers**: Las imágenes de Docker reciben el parámetro `--cloud` y cargan dinámicamente las librerías necesarias (boto3 para AWS, google-cloud para GCP, azure-sdk para Azure).
+
+### Integración de Nubes
+
+-   **GCP**: Utiliza `google-cloud-storage` para staging y `google-cloud-bigquery` para la carga final. Soporta tablas particionadas y clustering.
+-   **AWS**: Utiliza `boto3` para subir a S3 y comandos `COPY` para cargar en Redshift.
+-   **Azure**: Utiliza `azure-storage-blob` para Data Lake Gen2 y `COPY` para Synapse Analytics.
+
+## Automatización y Templates
+
+El framework actúa como una fábrica de código automatizada.
+
+1.  **Inicialización**: El comando `datapipe init` crea una estructura de carpetas estandarizada basada en templates Jinja2.
+2.  **Generación de Código**:
+    -   `datapipe generate schema`: Conecta a Oracle, lee los tipos de datos y genera automáticamente los schemas AVRO y de la nube destino.
+    -   `datapipe generate dag`: Lee tu configuración y crea el código Python para Airflow, configurando los operadores Docker con las variables de entorno correctas.
+3.  **Despliegue GitOps**: Al ser todo código generado, puedes versionarlo en Git. Tu CI/CD solo necesita ejecutar `make build` y copiar los DAGs generados a tu entorno de Airflow.
+
+## DataPipe vs Pipelineer
+
+| Característica | Pipelineer (Anterior) | DataPipe (Nuevo) |
+| :--- | :--- | :--- |
+| **Dependencias** | `pip` manual (propenso a conflictos) | `Poetry` (reproducible y seguro) |
+| **Ejecución** | Depende del entorno local/Airflow | `Docker` (funciona igual en todas partes) |
+| **Formato Datos** | CSV/JSON (lento, sin tipos) | `AVRO` (rápido, comprimido, tipado) |
+| **Multi-Cloud** | Hardcoded para GCP | Diseño modular para GCP/AWS/Azure |
+| **Mantenimiento** | Scripts dispersos | CLI unificada y estructura estándar |
+
+## Requisitos Previos
 
 - Python 3.11+
 - Docker
-- Poetry (`curl -sSL https://install.python-poetry.org | python3 -`)
+- Poetry
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Instalación
 
@@ -39,21 +75,7 @@ poetry run datapipe init migracion-ventas --cloud gcp
 
 ### 3. Configurar
 
-Edita `migracion-ventas/config.yaml` con tus credenciales y tablas:
-
-```yaml
-project:
-  name: "migracion-ventas"
-  
-source:
-  connection:
-    host: "${ORACLE_HOST}"
-    service_name: "ORCL"
-
-tables:
-  - name: "VENTAS_2024"
-    load_mode: "incremental"
-```
+Edita `migracion-ventas/config.yaml` con tus credenciales y tablas.
 
 ### 4. Generar Artefactos
 
@@ -75,21 +97,8 @@ make build
 cp dags/* $AIRFLOW_HOME/dags/
 ```
 
-## 📚 Documentación
+## Documentación
 
 - [Guía de Inicio Rápido](docs/getting-started.md)
 - [Configuración Multi-Cloud](docs/multi-cloud.md)
 - [Schemas AVRO y Tipos de Datos](docs/avro-schemas.md)
-- [Arquitectura Docker](docs/docker-architecture.md)
-
-## 🏗 Estructura del Proyecto
-
-```
-datapipe-framework/
-├── src/                # Código fuente del framework
-├── docker/             # Dockerfiles (Base, Extractor, Loader)
-├── templates/          # Templates Jinja2 (DAGs, Configs)
-├── schemas/            # Schemas generados (AVRO/JSON)
-├── dags/               # DAGs generados
-└── pyproject.toml      # Dependencias y configuración
-```
