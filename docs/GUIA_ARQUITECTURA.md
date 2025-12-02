@@ -76,3 +76,38 @@ El DAG se vería así:
 *   **¿Cuándo uso DataPipe?**: Siempre que quieras traer datos "crudos" de Oracle.
 *   **¿Cuándo pido un repo de Dataform?**: Cuando necesites crear tablas finales (DEP) con lógica de negocio, cruces o limpieza.
 *   **¿Cuándo pido una Cloud Function?**: Casi nunca para cargas masivas. Solo para APIs ligeras o triggers de archivos individuales.
+
+---
+
+## 6. ¿Cómo ejecuto esta decisión? (El "Handshake")
+
+Actualmente, el framework **DataPipe** no decide por ti, pero prepara el terreno para que la integración sea natural.
+
+### Escenario Típico: "Necesito transformar datos"
+
+1.  **Paso 1: Decisión (Humana)**
+    *   Miras el árbol: "¿Necesito lógica compleja?" -> **SÍ**.
+    *   Conclusión: Necesito **Dataform**.
+
+2.  **Paso 2: Ejecución (Comandos)**
+    *   **Ingesta**: Corres `datapipe init` y `generate dag`. Esto deja los datos en `dataset_raw.tabla_ventas`.
+    *   **Transformación**: En otra terminal (o carpeta), inicias Dataform:
+        ```bash
+        dataform init dataform-ventas
+        ```
+
+3.  **Paso 3: El "Handshake" (Conexión)**
+    *   En Dataform, declaras tu fuente (que DataPipe ya llenó):
+        ```sql
+        config { type: "declaration", schema: "dataset_raw", name: "tabla_ventas" }
+        ```
+    *   Ahora creas tu tabla final:
+        ```sql
+        config { type: "table", schema: "dataset_final", name: "ventas_dep" }
+        SELECT * FROM ${ref("tabla_ventas")} WHERE monto > 0
+        ```
+
+### ¿Por qué repositorios separados?
+Mantener `datapipe-framework` (Infraestructura/Ingesta) separado de `dataform-logica` (Negocio) permite que:
+*   Los Ingenieros de Datos mantengan el DataPipe.
+*   Los Analistas de BI/Data mantengan el Dataform (SQL) sin romper el pipeline de ingesta.
