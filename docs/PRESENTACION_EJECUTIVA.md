@@ -18,7 +18,7 @@ Usa esta tabla para mostrar la diferencia abismal entre lo viejo y lo nuevo.
 | :--- | :--- | :--- | :--- |
 | **Dependencias** | `pip` manual. "En mi máquina funciona". | **Poetry**. Entornos blindados y reproducibles. | **Estabilidad**. Cero caídas por versiones de librerías incompatibles. |
 | **Portabilidad** | Atado a GCP/Airflow específico. | **Docker**. Corre igual en local, AWS, Azure o Kubernetes. | **Libertad**. No hay "Vendor Lock-in". Si suben precios, nos movemos. |
-| **Datos** | CSV/JSON. Lento, pesado, sin tipos. | **AVRO**. Binario, comprimido, con Schema Evolution. | **Calidad**. Los números llegan como números, no texto. Menos errores de data. |
+| **Datos** | AVRO (Implementación rígida/manual). | **AVRO + Schema Evolution**. Manejo automático de cambios de columnas. | **Resiliencia**. Si Oracle cambia, el pipeline no se rompe. |
 | **Mantenimiento** | Scripts dispersos y manuales. | **Framework Unificado**. Un cambio arregla 100 pipelines. | **Eficiencia**. El equipo mantiene 1 código, no 100. |
 | **Multi-Cloud** | No existe (Hardcoded). | **Nativo**. Cambiar de nube es cambiar 1 línea de config. | **Estrategia**. Listos para la estrategia multi-nube de la empresa. |
 
@@ -65,3 +65,19 @@ Prepárate para defender el proyecto con estas respuestas.
 4.  **Reducción** de costos operativos.
 
 Es la base sólida que necesitamos para escalar la analítica de la empresa.
+
+---
+
+## 6. Roadmap: ¿Qué sigue? (Future Proof)
+
+Este framework está diseñado para crecer. Ya tenemos identificados los siguientes pasos de automatización:
+
+1.  **Generación de Dataform**:
+    *   Actualmente: Creamos los `.sqlx` manualmente.
+    *   Futuro: `datapipe generate dataform`. El framework creará la lógica de transformación básica automáticamente.
+2.  **Calidad de Datos (Data Quality)**:
+    *   Integración automática de tests (Great Expectations) en el pipeline generado.
+3.  **Catálogo de Datos**:
+    *   Registro automático de los nuevos datasets en Data Catalog.
+
+> "No estamos comprando una herramienta cerrada, estamos construyendo una plataforma evolutiva."
